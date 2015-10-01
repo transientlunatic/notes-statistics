@@ -1,0 +1,27 @@
+\begin{tikzpicture}
+    \begin{axis} [
+    width=\linewidth, 
+    height=2in,
+    domain=-10:10,
+    samples=200,
+    xmin= 0.1, xmax=10,
+    ymin=0, ymax=0.6
+    ]
+    \def\k{1}
+    \addplot gnuplot[id=chisq, mark=none, accent-red, ultra thick, restrict y to domain=0:2]{
+      2**(-0.5*\k)*(gamma(0.5*\k)**-1) * x**(0.5*\k - 1) * exp(-x/2)
+    };
+    \def\k{2}
+    \addplot gnuplot[id=chisq2, mark=none, muted-orange, ultra thick, restrict y to domain=0:2]{
+      2**(-0.5*\k)*(gamma(0.5*\k)**-1) * x**(0.5*\k - 1) * exp(-x/2)
+    };
+    \def\k{3}
+    \addplot gnuplot[id=chisq3, mark=none, accent-green, ultra thick, restrict y to domain=0:2]{
+      2**(-0.5*\k)*(gamma(0.5*\k)**-1) * x**(0.5*\k - 1) * exp(-x/2)
+    };
+    \def\k{4}
+    \addplot gnuplot[id=chisq4, mark=none, accent-blue, ultra thick, restrict y to domain=0:2]{
+      2**(-0.5*\k)*(gamma(0.5*\k)**-1) * x**(0.5*\k - 1) * exp(-x/2)
+    };
+    \end{axis}
+\end{tikzpicture}

@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+    \begin{axis} [
+    ybar interval,
+    width=\linewidth, 
+    height=2in,
+    domain=-1:5,
+    samples=200,
+    xmin=-1, xmax=5
+    ]
+    \addplot gnuplot[id=uni, mark=none, muted-green, ultra thick]{
+    	     x<1 ? 0 : x>4 ? 0 : 0.25
+    };
+    \end{axis}
+\end{tikzpicture}

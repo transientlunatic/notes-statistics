@@ -1,0 +1,1718 @@
+\documentclass{dwnotes}         		        % The Tufte-book class
+\usepackage{danielphysics}
+\usepackage{algpseudocode}
+\title{Statisitical Astronomy}
+\author{Daniel Williams}
+\pubyear{2013}
+\date{}
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+\label{sec:intro}
+
+This course investigates how to make general statements about the
+universe based on specific examples of its behaviour, which is common
+to all sciences. \\ Astronomy and astrophysics are not generally an
+experimental science -- relying almost entirely on remote sensing to
+collect data, and so most work goes ahead by plausible reasoning based
+on the available information, rather than through a more frequentist
+and repeatious approach.
+
+\section{Plausible Reasoning}
+\label{sec:reasoning}
+
+\subsection{Types of Reasoning}
+\label{sec:types}
+
+Consider the following three statements:
+\begin{enumerate}
+\item All stars in the Pleiades are within 200 parsecs of the
+  Earth. (Hypothesis $C$)
+\item The star Alcyone is in the Pleiades. ($B$)
+\item Alcyone is within 200 pc of the Earth. ($A$)
+\end{enumerate}
+There is clearly some sort of relationship between these
+statements. Let us assume that statement 1 is true, which allows us to
+define a {\em hypothesis space}, then,
+\begin{itemize}
+\item If $B$ is true, this implies that $A$ is true.
+\item If $A$ is flase, this implies that $B$ is false.
+\end{itemize}
+But if $A$ and $C$ are true, what can we infer about $B$? Nothing
+definite, but,
+\begin{itemize}
+\item If $A$ is true, then $B$ is {\em more plausible}.
+\item If $B$ is false, then $A$ is less plausible.
+\end{itemize}
+
+\subsection{Boolean Algebra}
+\label{sec:boolean}
+
+Both deductive and plausible reasoning follow the same algebraic rules
+of logic which were set down in 1854 by George Boole. We can denote a
+set of statements as $A, B, C, \dots$, and define a number of
+operations.
+\begin{itemize}
+\item \textbf{logical product} $AB=$``both $A$ and $B$ are true.''
+\item \textbf{logical sum} $A+B=$``at least one of $A$ or $B$ are
+  true.''
+\item \textbf{logical negation} $\bar{A}=$ ``A is false.''
+\end{itemize}
+This allows the definition of a number of theorems,
+\begin{enumerate}
+\item $A(B+C) = AB + AC$
+\item $A + AB = A$
+\item $A + BC = (A+B)(A+C)$
+\item $A + \bar A = \text{True}$
+\item $A \bar A = \text{False}$
+\item $\bar{\bar{A}} = A$
+\item $A + \bar A \bar B = A \bar B$
+\item $(\overline{A+B}) = \bar A \bar B$
+\item $(\overline{AB}) = \bar A + \bar B$
+\end{enumerate}
+We can go on to add a further operator to account for plausible
+reasoning; the conditional operator:
+\begin{itemize}
+\item \textbf{logical condition} $A|B=$ ``the conditional probability
+  that $A$ is true given that $B$ is true.''
+\end{itemize}
+In the Pleiades example of section \ref{sec:reasoning},
+\begin{equation}
+  \label{eq:pleiades1}
+  B | CA > B | C
+\end{equation}
+\begin{equation}
+  \label{eq:pleiades2}
+  A | \bar{B} C < A | C
+\end{equation}
+These degrees of plausibility can be mapped onto a continuous and
+monotonically increasing real function in the range $p(x) \in [0,1]$.
+Thus,
+\begin{equation}
+  \label{eq:plausibilitysum}
+  p(A|B) = p(\bar A | B) = 1
+\end{equation}
+\begin{equation}
+  \label{eq:plausibilityproduct}
+  p(AB|C) = p(A|C)p(B|AC) = p(B|C)p(A|BC)
+\end{equation}
+\begin{figure}
+  \centering
+  \input{figures/vennconditional.pgf}
+  \caption{A Venn diagram illustrating the conditional operations.}
+  \label{fig:conditionalvenn}
+\end{figure}
+which can be expressed in terms of a Venn diagram (viz figure
+\ref{fig:conditionalvenn}).  If $A$ and $C$ are true, only a fraction,
+$\frac{AB|C}{A|C}$ of this certainty correspnds to $B$ also being
+true, i.e. $\frac{p(AB|C)}{p(A|C)} = p(B|AC)$.
+
+\subsection{Bayes' Theorem}
+\label{sec:bayestheorem}
+
+It is thus possible to re-express the product rule as
+\begin{equation}
+  \label{eq:bayestheorem}
+  p(B|AC) = \frac{ p(B|C) p(A|BC) }{ p(A|C) }
+\end{equation}
+This is Bayes' Theorem (Rev Thomas Bayes, 1763) and is used to assess hypotheses in the light of new evidence. Historically $p$ has been known as the ``probability'', and the process which uses it is known as Bayesian probability theory. \\
+This interpretation of probability is simultaneously the oldest and
+the youngest: it was put forward by Laplace, Bernoulli, and Bayes, but
+then fell out of favour, until the period between 1939 and 1950 when
+it was put onto a firmer, more modern mathematical footing. In the
+intervening period frequentist probability came to be the more
+commonly used interpretation.
+
+\begin{example}
+  Harold may have a rare disease, present in 1 out of 10,000 people of
+  his age and background. He has a blood test which is known to show a
+  positive result in 95\% of cases when the person has the disease,
+  but on 1\% of cases when they do not.
+  Harold recieves a positive result; what is the probability that he has the disease?
+
+  Let $H = \text{Healthy}$, $D = \text{Diseased}$, $+ = \text{positive result}$, $- = \text{negative result}$. \\
+  Let $C = \text{Harold is a typical member of the population}$, then,
+  \begin{align*}
+    p(D|C) &= 0.0001 \\
+p(+|DC) &= 0.95 \\
+p(+|HC) &= 0.01 \\
+p(H|C) &= 0.9999
+  \end{align*}
+We want to know $p(D|+C)$.
+By Bayes' Theorem, equation (\ref{eq:bayestheorem}),
+\[ p(D|+C) = p(D|C) \frac{p(+|DC)}{p(+|C)} \] we know everything on
+the right hand side except $p(+|C)$, the probability of a positive
+result for a group member. Each group member is either ill, or not
+ill, so
+\[ p(+|C) = \overbrace{p(H|C) p(+|HC)}^{\text{Healthy}} 
+   + \overbrace{p(D|C) p(+|DC)}^{\text{Diseased}} \]
+so,
+\[ p(D|+c) = \frac{0.0001 \times 0.95}{0.9999 \times 0.01 + 0.0001 \times 0.95} = 0.01\]
+So he has a 1\% chance of being diseased. The moral o this story is \[ p(+|DC) \neq p(D|+C) \]
+\end{example}
+
+\begin{example}
+  What is $p(A+B|C)$ in terms of $p(A|C) + p(B|C)$?  We can evaluate
+  this by multiple applications of the product and sum rules.
+  \\Recalling $A+B = \overline{\bar{A} \bar{B}}$, and using $p(X|Y) +
+  p(\bar{X}|Y) = 1$,
+\[ p(A+B | C) + p(\bar{A} \bar{B} | C) = 1 \]
+so
+\begin{align*}
+   p(A+B|C) &= 1 - p(\bar{A}\bar{B}| C)\\
+&= 1 - p(\bar{A}|C) p(\bar{B}| \bar{A}C)\\
+&= 1 - p(\bar{A}| C) \left[ 1 - p(B|bar{A}C) \right] \\
+&= p(A|C) + p(B|C) p(\bar{A}| BC) \\
+&= p(A|C)+p(B|C)[1-p(A|BC)]
+\end{align*}
+thus
+\[ p(A+B|C) = p(A|C)+p(B|C)-p(AB|C) \]
+which is the extended sum rule.
+\end{example}
+
+\section{Frequentist Probability Theory}
+\label{sec:frequentistcrap}
+
+Bayesian probability is overtly subjective. It works with states of
+belief, so different people will assert different probabilities to the
+same statement if their state of knowledge is different. Frequentist
+probability is an attempt to remove this subjectivity.
+
+\subsection{Frequentist Probability}
+\label{sec:freqprob}
+
+Suppose we perform an experiment $N$ times (e.g. tossing a coin), and we define the relative frequency of an outcome with attribute $A_i$, (e.g. `heads'), as 
+\[ f(A_i) = \frac{n(A_i)}{N} \]
+Then, the probability of an outcome $A_i$ is
+\begin{equation}
+  \label{eq:probfreq}
+  p_f(A_i) = \lim_{N \to \infty} \frac{n(A_i)}{N}
+\end{equation}
+We need to make a few assumptions:
+\begin{itemize}
+\item All experiments are conducted under the same conditions.
+\item The limit converges.
+\item Past frequencies predict future frequencies.
+\end{itemize}
+
+\subsection{Combinatorial Probability}
+\label{sec:combinprob}
+
+Suppose we toss a dice which we believe to be fair, so the combinatorial probability of tossing a 6 is
+\[ P_{\rm c} = \frac{\text{Number of ways to toss 6}}{\text{Number of
+    possible outcomes.}} = \frac{1}{6} \] However, this is still a
+circular definition (`fair' means equally probable), and we need to be
+able to enumerate the total number of outcomes. As $N \to \infty$ there is a good probability that the frequentist probability will converge on the combinatorial.\\
+Both $p_{\rm f}$ and $p_{\rm c}$ obey the sum and product rules, and
+both are a valid starting point for assigning `degrees of belief' in
+Bayesian probability theory.
+
+\begin{example}
+  There are two urns, each containing red and white balls.
+  \begin{itemize}
+  \item Urn 1 contains 3 red and 7 white balls
+  \item Urn 2 contains 6 red and 4 white balls
+  \end{itemize}
+  You, blindfolded, extract a ball from an urn. What is the probability
+  \begin{itemize}
+  \item that it is red?
+  \item that it came from urn 1, given it was red?
+  \end{itemize}
+
+  Using Bayes' theorem, but assigning the probabilities using
+  combinatorics,
+  \[ p(R|1) = \frac{3}{10}, \quad p(R|2) = \frac{6}{10} \quad p(1) =
+  p(2) = \frac{1}{2} \]
+  Then,
+  \[ p(R) = p(R|1)p(1) + p(R|2)p(2) = \frac{3}{10} \cdot \frac{1}{2} +
+  \frac{6}{10} \cdot \frac{1}{2} = 0.45 \] Thus, by Bayes,
+  \[ p(1|R) = \frac{p(1)p(R|1)}{p(R)} = \frac{0.5 \times 0.3}{0.45} =
+  0.3 \]
+\end{example}
+
+\section{Probability Distributions}
+\label{sec:distributions}
+
+Thus far we have looked at situations that are true or false; with the
+probability distributed between two options (BPT) or with a frquency
+of heads/tails (FPT). What if there are any outcomes to consider? (eg
+the number of photons arriving in a time $\tau$ from a source). To do this we distribute the probability arounf the options, defining
+\[ p(0), p(1), \dots, p(\infty) \] with \[ \sum_{i=0}^{\infty} p(i) =
+1 \] In FPT an observed event with several possible outcoes is called
+a random event. If the outcome is a measurable quantity it is a random
+variable. In BPT randomness just implies a lack of knowledge.
+
+If a random variable can take only a finite number of states it is a discrete random variable. We can associate a probability, $p(r)$, with each of the outcomes, $r$. The set of all $p(r)$ is the probability distribution of the discrete random variable, $r$.
+
+\subsection{Poisson Distribution}
+\label{sec:poisson}
+
+A Poisson random variable obeys the following axioms:
+\begin{enumerate}
+\item The probability of an event occuring in a time interval $\tau$ is independent of any past event.
+\item Events occur at an intrinsic rate, $\mu$, such that the probability of a single event in the time $\delta t$ is $\mu \delta t$.
+\item The probability of two (or more) events occuring at the same time is $0$.
+\end{enumerate}
+\begin{equation}
+  \label{eq:poisson}
+  p(N|t, \mu) = \frac{(\mu\tau)^N}{N!} \exp(-\mu \tau)
+\end{equation}
+\begin{figure}
+  \centering
+  \input{figures/poisson.pgf}
+  \caption{The Poisson distribution.}
+  \label{fig:poisson}
+\end{figure}
+{\em see proof on handout.}\\
+\begin{example}
+  On an image of the sky stars are distributed randomly with one star,
+  on average, per solid angle, $\Omega$.  Drawing a circle on the
+  image with solid angle $6\Omega$, what is the probability that
+  \begin{enumerate}
+  \item it contains exactly 6 stars?
+  \item it contains 10 or fewer stars?
+  \end{enumerate}
+
+  Using the Poisson distribution with $\mu = \frac{1}{\Omega}$ and
+  $\tau = 6\Omega{}$, 
+\begin{align*} p(N) &= \frac{\left( \frac{1}{\Omega} \cdot 6\Omega\right)^{N} \exp\left( -\frac{1}{\Omega}\cdot 6\Omega \right)}{N!} \\ &= \frac{6^N}{N!} \exp(-6) \\ p(6) &= \frac{6^6}{6!} \exp(-6) = 0.16
+\end{align*}
+Then, 
+\begin{align*}p(N \le 10) &= p(0) + p(1) + \dots + p(10) \\ &= 0.89
+\end{align*}
+\end{example}
+
+\subsection{Uniform Distribution}
+\label{sec:uniform}
+
+The uniform distribution is the simplest probability distribution,
+assigning the same probability to every value of $x \in (a,b)$,
+\begin{equation}
+  \label{eq:uniformdistro}
+  p(x) =  
+\begin{cases}
+    \frac{1}{b-a} & \text{ if $a < x < b$} \\
+    0 & \text{otherwise}
+  \end{cases}
+\end{equation}
+\begin{figure}
+  \centering
+  \input{figures/uniform.pgf}
+  \caption{A uniform distribution}
+  \label{fig:uniform}
+\end{figure}
+its accompanying cumulative distribution is
+\begin{equation}
+  \label{eq:uniformcdf}
+P(X<x) = 
+\begin{cases}
+  0 & x' < a \\
+\frac{x'a}{b-a} & a < x' < b \\
+1 &  x' \geq b
+\end{cases}
+\end{equation}
+
+\subsection{Gaussian Distribution}
+\label{sec:gaussian}
+
+\begin{figure}
+  \centering
+  \input{figures/gaussian.pgf}
+\label{fig:gaussian}
+  \caption{The Gaussian, central, or normal distribution.}
+\end{figure}
+
+This has the distribution function 
+\begin{equation}
+  \label{eq:gaussian}
+  p(x) = \frac{1}{\sqrt{2 \pi} \sigma} \exp \qty(- \frac{(x-\mu)^2}{2 \sigma^2})
+\end{equation}
+The CDF has no analytic form, but when a special function, $\erf(t)$
+is introduced a sei-analytic one can be found.
+\begin{equation}
+  \label{eq:cdfgaussian}
+  \Phi(t) = \frac{1}{\sqrt{2 \pi} \sigma} \int_{-\infty}^t \exp \qty(- \frac{(x-\mu)^2}{2 \sigma^2}) \dd{x}
+\end{equation}
+\begin{equation}
+  \label{eq:erf}
+  \erf(t) = \frac{2}{\sqrt{\pi}} \int_0^t e^{-x^2} \dd{x}
+\end{equation}
+The Gaussian distribution is important, as, according to the central
+limit theorem, other pdfs tend towards the central distribution as the
+number of samples approaches $\infty$, and because it is the correct
+pdf to use when only a mean and a variance are known for a stochastic
+function.
+
+\subsection{The $\chi^2$ Distribution}
+\label{sec:chi2-distribution}
+
+Consider a single observation taken from a Gaussian likelihood,
+\[ p(x | \mu, \sigma) = \frac{1}{\sigma \sqrt{2 \pi}} \exp( -
+\frac{(x-\mu)^2}{2 \sigma^2} ) \]
+with $k$ observations this becomes
+\[ p(\set{x_i} | \set{\mu_i}, \set{\sigma_i}) = \prod_{i=1}^k
+\frac{1}{\sigma_i \sqrt{2}\pi} \exp( - \frac{(x_i - \mu_i)^2}{2
+  \sigma_i^2} )\]
+and so the log likelihood is
+\[ \log(p) \propto - \sum_{i=1}^k \frac{(x_i - \mu_i)^2}{2
+  \sigma_i^2} \] where the quantity on the right hand side is a
+statistic drawn from a $\chi^2$-distribution.
+
+\begin{definition}[{$\chi^2$}-distribution]
+  The probability density function for th $\chi^2$-distribution is described by
+  \begin{equation}
+    \label{eq:4}
+    p(x | k) = \frac{1}{2^{\frac{k}{2}} \Gamma \qty (\frac{k}{2}) } x^{\frac{k}{2} -1} e^{- \frac{x}{2}} 
+  \end{equation}
+\end{definition}
+
+\begin{figure}
+  \centering
+  \input{figures/chisquared.pgf}
+  \caption{The $\chi^2$ distribution for $k \in [1,4]]$.}
+  \label{fig:chisquareddistropdf}
+\end{figure}
+The distribution is illustrated in figure
+\ref{fig:chisquareddistropdf}. 
+
+\subsection{Determining PDFs}
+\label{sec:determinepdf}
+
+The most intuituve way to determine is to make repeated measurements
+of a stochastic function to produce a histogram of the results. Then,
+arranging these into a correctly normalised histogram, as the number
+of trials and bins approaches infinity the histogram will approach the
+PDF.\\
+In a Bayesian perspective, the PDF represents the state of knowledge
+about the noise: a uniform PDF has no preference for one value over
+another; a central pdf represents knowledge of only its mean and
+variance, and so on.
+
+\subsection{Central Limit Theorem}
+\label{sec:centrallimit}
+
+Considering a Poisson distribution,
+\[ p(N) = \exp(-\lambda) \frac{\lambda^N}{N!} \]
+then, for $N\gg1$, it can be shown that 
+\[ p(N) \approx \frac{1}{\sqrt{2 \pi \lambda}} \exp\qty(- \frac{(N-\lambda)^2}{2 \lambda}) \] which is the Gaussian distribution, with $\mu = \lambda$ and $\sigma = \sqrt{\lambda}$.
+
+\subsection{Moments of a Distribution}
+\label{sec:moments}
+
+The $r^{\rm th}$ moment of a pdf\footnote{note that not all pdfs have defined moments, for example the Cauchy distribution, the integral of which diverges.}, $p(x)$, is defined as 
+\begin{equation}
+  \label{eq:moment}
+  \langle x^r \rangle = \int_{-\infty}^{\infty} x^r p(x) \dd{x}
+\end{equation}
+The \emph{first moment} of the stochastic function is
+\[ \langle x \rangle = \int_{-\infty}^{\infty} x p(x) \dd{x} \] This
+is the {\em mean} of the stochastic function, or the expectation
+value, $E(X)$, of $X$.\\
+The \emph{second moment} is
+\[ \langle x^2 \rangle = \int_{-\infty}^{\infty} x^2 p(x) \dd{x} \]
+which is the mean square of the stochastic function. \\ The variance is defined in terms of this moment,
+\begin{align}
+  \label{eq:variance}
+  \sigma^2 = {\rm var}(x) &= \int_{-\infty}^{\infty} \qty( x - \langle x \rangle)^2 p(x) \dd{x} \\
+          &= \ev{\qty(x - \langle x \rangle )^2 } \nonumber \\
+          &= \ev{x^2} - \ev{2x \ev{x}} + \ev{x}^2  \nonumber\\
+          &= \ev{x^2} - 2 \ev{x} \ev{x} + \ev{x}^2 \nonumber\\
+          &= \ev{x^2} = \ev{x}^2
+\end{align}
+which is the mean square deviation from the mean.
+The {\em standard deviation}, $\sigma$, is the square-root of the variance.
+
+\subsection{Other Measures of Distributions}
+\label{sec:measures}
+
+The \emph{median} of a stochastic function divides the CDF into two halves, such that
+\begin{equation}
+  \label{eq:median}
+  \int_{-\infty}^{x_{\rm med}} p(x) \dd{x} = 0.5
+\end{equation}
+The \emph{mode} corresponds to the most pobable value of a stochastic function, if such a single value exists.
+
+\subsection{Changing Variable}
+\label{sec:changevariable}
+
+In teh case that we know the distribution for a variable, $x$, but
+want to find the corresponding distribution for a variable $y(x)$ we
+need a change of variable. We know that the probability contained in
+equivalent intervals must be identical. Assuming that $y$ is a monotonic function, for a small interval, 
+\[ p(x) \qty| \delta x | = p(y) \qty| \delta y | \]
+and in the limit
+\begin{equation}
+  \label{eq:changevaronedim}
+  p(y) = p(x) \qty| \frac{\dd{x}}{\dd{y}} |
+\end{equation}
+If $y$ is \emph{not} monotonic, we need to be more careful.
+
+In more than one dimension we must turn to the Jacobian, so
+\[ p(y_1, y_2, \dots, y_n) = \qty|J| p(x_1, x_2, \dots, x_n) \]
+with
+\begin{equation}
+  \label{eq:jacobian}
+  J = \pdv{(x_1, x_2, \dots, x_n)}{(y_1, y_2, \dots, y_n)}
+\end{equation}
+which is a matrix with elements
+\[ J_{ij} = \pdv{x_i}{y_i} \]
+
+\begin{example}{\em The Exponential Distribution}\\
+  The random number generator in a programming library will normall
+  provide a uniform distribution between 0 and 1. That is
+\[ p(x) \dd{x} = 
+\begin{cases}
+  \dd{x} & \text{ if } 0 < x < 1 \\
+0 & \text{ otherwise. }
+\end{cases}\] However, if we wish to generate an exponential
+distribution we would choose
+\[ y(x) = - \log(x) \] such that \[ x = e^{-y(x)} \]
+Then
+\[ p(y) \dd{y} = p(x) \abs{\dv{x}{y}} \dd{y} \]
+and thus
+\[ p(y) = \exp(-y) \] So $y = - \log(x)$ will provide an exponential
+distribution.
+\end{example}
+
+\subsection{Multivariate Distributions}
+\label{sec:mult-distr}
+
+The concept of a probability distribution extends easily into higher
+dimensions. We then get joint probability distributions, where there
+are two variables involved with the probability of an event: the joint
+probability of two events, $x_1$ and $x_2$ can be described
+\begin{equation*}
+  p(a_1 \le x_1 b_1 \text{ and } a_2 \le x_2 \le b_2) = \int_{a_1}^{b_1} \int_{a_2}^{b_2} p(x_1, x_2) \dd{x_1} \dd{x_2}
+\end{equation*}
+and this continues to higher dimensions.  The {\em marginal
+  distribution} of a variable within a joint distribution is the
+probability distribution for just that variable, and is found by
+integrating over the others.
+\begin{equation}
+  \label{eq:marginal}
+  p(x_1) = \int_{-\infty}^{\infty} p(x_1, x_2) \dd{x_2}
+\end{equation}
+Two variables are then {\em statistically independent} iff their joint
+PDF can be written as the product of the marginal PDFs
+\begin{equation}
+  \label{eq:independentvariables}
+  p(x_1, x_2) = p_1(x_1) p_2(x_2)
+\end{equation}
+put another way, if $x_1$ and $x_2$ are independent, 
+\[ p_1(x_1) = p(x_1|x_2) \]
+
+\subsection{The Bivariate Normal Distribution}
+\label{sec:bivar-norm-distr}
+
+The bivariate normal distribution is a joint distribution of two
+independent variables, $x_1$ and $x_2$ with the form
+\begin{equation}
+  \label{eq:bivariatenormal}
+  p(x_1, x_2) = \frac{1}{2 \pi \sigma_1 \sigma_2} \exp( - \frac{(x_1 - \mu_1)^2}{2 \sigma_1^2} - \frac{(x_2 - \mu_2)^2}{2 \sigma_2^2} )
+\end{equation}
+which can be simplified somewhat by letting
+\[ \vec{x} = (x_1, x_2) \] \[ \vec{\mu} = (\mu_1, \mu_2) \] and 
+\[ A = \begin{pmatrix}  \frac{1}{\sigma_1^2} & 0\\ 0 & \frac{1}{\sigma_2^2} \end{pmatrix}\]
+so
+\begin{equation}
+  \label{eq:binormal2}
+  p(\vec{x}) = \frac{1}{2 \pi \sigma_1 \sigma_2} \exp( \half (\vec{x} - \vec{\mu}) A (\vec{x} - \vec{\mu})^{\rm T})
+\end{equation}
+
+Note that 
+\[ A^{-1} =
+\begin{pmatrix}
+  \sigma_1^2 & 0 \\ 0 & \sigma_2^2
+\end{pmatrix} \]
+so letting $C = A^{-1}$, we find a framework for a more general distribution,
+\[ p(\vec{x}) = \frac{1}{2 \pi ({\rm det}(C)^{\half}} \exp( - \half ( \vec{x} - \vec{\mu})C^{-1} (\vec{x} - \vec{\mu})^{\rm T}) \]
+
+$C$ is called the covariance matrix of the variables. If the variables
+are independent it will be diagonal, however, it is possible to extend
+the definition to incorporate correlated variables, where it takes on the form
+\[ C =
+\begin{pmatrix}
+  \sigma_{11} & \sigma_{12} \\ \sigma_{21} & \sigma_{22}
+\end{pmatrix}
+\]
+It is also possible to define the correlation coefficient between two variables, 
+\begin{equation}
+  \label{eq:corrco}
+  \rho_{12} = \frac{\sigma_{12}}{\sigma_1 \sigma_2}
+\end{equation}
+The general bivariate normal distribution is then
+\begin{equation}
+  \label{eq:genbivariatenormal}
+  p(x,y) = \frac{1}{2 \pi \sigma_x \sigma_y \sqrt{1-\rho^2}} \exp( - \frac{1}{2(1-\rho^2)} Q(x,y) )
+\end{equation}
+with
+\[ Q(x,y) = \qty( \frac{x - \mu_x}{\sigma_x} )^2 - 2 \rho \qty(
+\frac{x-\mu_x}{\sigma_x}) \qty( \frac{y - \mu_y}{\sigma_y}) + \qty(
+\frac{y - \mu_y}{\sigma_y})^2 \] with the marginal distributions of
+each variable being simply a univariate normal distribution.
+
+\begin{figure*}
+\begin{tikzpicture} 
+\def\number{3}
+\pgfmathsetmacro{\frac}{\textwidth/\number}
+\matrix[column sep=0.5cm, row sep=0.5cm]{
+  \def\rhov{0.0}
+    \begin{axis}[view={0}{90}, domain=-.25:.25, width=\frac, height=\frac, xtick=\empty, ytick=\empty,
+                 title={$\rho=0.0$}
+                ]
+      \addplot3[contour gnuplot={number=10,  labels=false }, ultra thick] 
+               {exp(x^2 - 2* (\rhov)*x*y +y^2)}; 
+      \addplot [dotted] {(\rhov)*x};
+    \end{axis} 
+&
+  \def\rhov{0.2}
+    \begin{axis}[view={0}{90}, domain=-.25:.25, width=\frac, height=\frac, xtick=\empty, ytick=\empty,
+                 title={$\rho=\rhov$}
+                ]
+      \addplot3[contour gnuplot={number=10,  labels=false }, ultra thick] 
+               {exp(x^2 - 2* (\rhov)*x*y +y^2)}; 
+      \addplot [dotted] {(\rhov)*x};
+    \end{axis} 
+&
+  \def\rhov{0.4}
+    \begin{axis}[view={0}{90}, domain=-.25:.25, width=\frac, height=\frac, xtick=\empty, ytick=\empty,                 title={$\rho=\rhov$}]
+      \addplot3[contour gnuplot={number=10,  labels=false }, ultra thick] 
+               {exp(x^2 - 2* (\rhov)*x*y +y^2)}; 
+      \addplot [dotted] {(\rhov)*x};
+    \end{axis}
+\\
+  \def\rhov{0.6}
+    \begin{axis}[view={0}{90}, domain=-.25:.25, width=\frac, height=\frac, xtick=\empty, ytick=\empty,                  title={$\rho=\rhov$}]
+      \addplot3[contour gnuplot={number=10,  labels=false }, ultra thick] 
+               {exp(x^2 - 2* (\rhov)*x*y +y^2)}; 
+      \addplot [dotted] {(\rhov)*x};
+    \end{axis} 
+&
+  \def\rhov{0.8}
+    \begin{axis}[view={0}{90}, domain=-.25:.25, width=\frac, height=\frac, xtick=\empty, ytick=\empty,                  title={$\rho=\rhov$}]
+      \addplot3[contour gnuplot={number=10,  labels=false }, ultra thick] 
+               {exp(x^2 - 2* (\rhov)*x*y +y^2)}; 
+      \addplot [dotted] {(\rhov)*x};
+    \end{axis}
+&
+  \def\rhov{1}
+    \begin{axis}[view={0}{90}, domain=-.25:.25, width=\frac, height=\frac, xtick=\empty, ytick=\empty,                  title={$\rho=\rhov$}]
+      \addplot3[contour gnuplot={number=10,  labels=false }, ultra thick] 
+               {exp(x^2 - 2* (\rhov)*x*y +y^2)}; 
+      \addplot [dotted] {(\rhov)*x};
+    \end{axis}   
+\\
+};
+\end{tikzpicture}
+\caption{The Bivariate Normal Distribution, plotted at various values
+  of $\rho$, alongside the regression line of $y$ on $x$.}
+\label{fig:bivariatenormal}
+\end{figure*}
+
+\subsection{Samples and Parents}
+\label{sec:samples-parents}
+
+The quantities, such as ``mean'', ``standard deviation'', and
+``covariance'' define the PDF of a given quantity. But when these are
+found from a finite set of data they represent only an approximation
+of the true quantities defining the true distribution of the
+data. Such quantities are the ``sample mean'' and the ``sample
+variance''. The true parameters are known as the ``distribution mean''
+or the ``parent mean''.
+
+\section{Parameter Estimation}
+\label{sec:estimationpar}
+
+Often we are presented with the task of estimating something using
+data that contain random errors or other uncertainties. The rest of
+the course is on how to do that well.
+
+Imagine we take $n$ independent measurements of some quantity under
+identical conditions (or so we believe). We can compute the sample
+mean, $\bar{x}$, and the variance, $\sigma^2$, of our measurements:
+\[ \bar{x} = \frac{1}{n} \sum x_i \]
+\[ \sigma^2 = \frac{1}{n} \sum (x_i - \bar{x})^2 \] Here $\sigma$ is
+our estimate of the error on each measurement, and we average $n$ of
+them, so we expect the sample mean to deviate from the true mean by
+only around $\frac{\sigma}{\sqrt{n}}$, i.e\
+\[ \mu = \bar{x} \pm \frac{\sigma}{\sqrt{n}} \] so we would expect
+$\mu$ to lie in this range 68\% of the time.  i.e.\ \[P \qty(\bar{x}-
+\frac{\sigma}{\sqrt{n}} \le \mu \le \bar{x} + \frac{\sigma}{\sqrt{n}})
+= 68\% \]
+
+\subsection{A General Procedure for Parameter Estimation}
+\label{sec:genproc}
+
+In a general problem we have a model of how the world works which
+depends on a number of parameters (e.g. binomial). The model tells us
+the likelihood of any given set of data, $\{D_k\}$, given a value for
+the parameters, $L = p(\{D_k\} | m,I)$. We can take into account prior
+probability of the model based on prior knowledge, ${\rm Prior} =
+p(m|I)$. Bayes' Theorem provides us with the posterior probability of
+the model parameters.
+\[ {\rm posterior} = p(m|\{D_k\}, I) \propto p(m|I) p(\{D_k\}|m,I) \]
+which we can then normalise. This is all that BPT has to say about the
+value of $m$.\\
+We will often want to summarise this in terms of two numbers; the best
+estimate, and the uncertainty.
+
+\subsubsection{Best estimates and error bars}
+\label{sec:bestestimate}
+
+The posterior pdf for some model parameter $x$ can have any shape, but
+it is usually peaked. The most probable value of $x$ is then $x_0$.
+\[ p(x_0 | {\rm data}) = p_{\rm max} \]
+and
+\[ \eval{\dv{p}{x}}_{x_0} = 0 \qquad \eval{\dv[2]{p}{x}}_{x_0} <0 \]
+We could expand a Taylor series about $x_0$, but we usually need fewer terms for the same accuracy using
+\[ L = \log \qty[ p(x|{\rm data})] \]
+the log-prior probability, since this has a critical point at $x_0$ too.
+Expanding $L$ about $x_0$, 
+\[ L(x) = L(x_0) + \half \eval{ \dv[2]{L}{x} }_{x_0} (x - x_0)^2 + \cdots \]
+By stopping at the second term we have
+\[ p(x|{\rm data}) \approx c \exp( \half \eval{\dv[2]{L}{x}}_{x_0} (x-x_0)^2 ) \]
+noting that the second derivative is negative, this is a Gaussian PDF,
+\[ p(x|{\rm data}) \approx \frac{1}{\sqrt{2 \pi} \sigma} \exp( -
+\frac{(x-x_0)^2}{2 \sigma^2} ) \] with $\sigma = \sqrt{- \eval{
+    \dv[2]{L}{x} }_{x_0} }$.
+
+In a Gaussian distribution, around $67\%$ of the probability lies
+withing $\sigma$ of $x_0$, so
+\[ p(x_0 - \sigma \le x \le x_0 + \sigma | {\rm data}) = 0.67 \]
+
+\begin{example}
+  The Gaussian approximation can be applied to the coin example.
+  \[ p(H|\{D_k\},I) \propto H^R (1-H)^{N-R} \] which is the posterior
+  probability of $H$ given $R$ heads and $N$ tosses using a uniform
+  prior.
+  \[ L = \log(p) = R \log(H) + (N-R) \log(1-H) + {\rm const.} \]
+so
+\[ \dv{L}{H} = \frac{R}{H} - \frac{(N-R)}{(1-H)} \]
+and
+\[ \dv[2]{L}{H} = - \frac{R}{H^2} - \frac{(N-R)}{(1-H)^2} \] The most
+probable $H$, $H_0$, occurs when \[ -\eval{ \dv{L}{H} }_{H_0} = 0 \]
+that is,
+\[ \frac{R}{H_0} - \frac{(N-R)}{(1-H_0)} = 0 \]
+so
+\[ H_0 = \frac{R}{N} \]
+which is just the relative frequency of heads.
+We also have
+\[ \sigma \approx \qty( - \eval{ \dv[2]{L}{H} }_{H_0} )^{-\half} \]
+thus
+\[ \sigma = \qty( \frac{H_0(1-H_0)}{N} )^{\half} \] For a fixed $N$ we
+are most sure of the value of $H$ when $H_0 \approx 0$ and $H_0
+\approx 1$, as it's very easy to spot when a coin is extremely
+biased. For a fixed $N$, $\sigma$ is greatest when $H_0=0.5$, so it's
+hard to be confident that a coin is fair. The peak of the posterior,
+$p(H_0)$ doesn't shift much after a few flips, so from that point on,
+\[ \sigma \propto \frac{1}{\sqrt{N}} \] so the uncertainty in $H$
+drops as $\frac{1}{\sqrt{N}}$.
+\end{example}
+
+\subsection{Shortest Confidence Intervals}
+\label{sec:short-conf-interv}
+
+Defining a confindence interval for a symmetric PDF is straightforward
+and unique process, of finding the area corresponding to a given
+quantity of the total probability. In an asymmetric PDF the choice is
+less clear, as there may be many choices of areas containing a given
+percentage of the proability. To get around this problem we require a
+shortest confidence interval, that is
+\[ p(x_1 \le x \le x_2 | \{ \rm data \}, I) = 0.95 \]
+and 
+\[ \abs{x_2 - x_1} \] is a minimum. In the case of an asymmetric PDF
+the value of $x_0$ is not the expectation value of $x$, but instead
+the most probable value given the data.
+
+\subsection{Gaussian Noise}
+\label{sec:gaussian-noise}
+
+It is common for a set of direct measurements of some given parameter
+to be contaminated by gaussian noise. For example the flux density of
+a Gaussian source, or measurements of the mass of the Sun. In this case, let the true value of the parameter be $\mu$, and let the $k$th measurement of it be 
+\[ x_k = \mu + {\rm noise}_k \] If we assume the noise is Gaussian,
+with a mean of $0$ and a variance $\sigma_0^2$,
+\[ {\rm noise}_k = x_k - \mu \]
+Now, given $\mu$, the probability of making a measurement $x_k$ is just the probability that the residual, $x_k-\mu$ can be attributed to the noise, that is
+\[ p(x_k | \mu, \sigma_0, I) = \frac{1}{\sigma \sqrt{2 \pi}} \exp( -
+\frac{(x_k-\mu)^2}{2 \sigma_0^2} )\] If the $N$ measurements, $\{ x_k
+\}$ are independent, then their joint probability (likelihood) is
+\begin{align*} 
+p( \{ x_k \} | \mu, \sigma_0, I ) &= \prod_{k=1}^N p(x_k | \mu, \sigma_0, I) \\
+&= \frac{1}{\sigma_0^N (2 \pi)^{\frac{N}{2}}} \exp( - \sum_{i=1}^N \frac{(x_k - \mu)^2}{2 \sigma_0^2} )
+\end{align*}
+In order to turn this into a posterior probability for $\mu$ given the
+data, and $\sigma_0$ we need Bayes Theorem, and a prior on $\mu$. Let
+us choose a uniform prior in the range $[\mu_{\rm min}, \mu_{\rm
+  max}]$, so
+\[ p(\mu|\sigma_0, I) =
+\begin{cases}
+  \frac{1}{\mu_{\rm max} - \mu_{\rm min}} & \mu_{\rm min} \le \mu \le \mu_{\rm max} \\
+0 & \text{ otherwise }
+\end{cases}
+\]
+Now,
+\[ p(\mu | \{ \rm data \}, \sigma_0, I) \propto p(\mu | \sigma_0, I) \cdot p( \{ x_k \} | \mu, \sigma_0, I ) \]
+and
+\[ \log[ p(\mu | \{ x_k \}, \sigma_0, I) = L = - \sum_{k=1}^N \frac{(x_k - \mu)^2}{2 \sigma_0^2} + {\rm const}] \]
+The value of $\mu$ which maximises $L$ is its most probable value (given the data and $\sigma_0$), $\mu_0$, i.e.\ 
+\[ \eval{ \dv{L}{\mu} }_{\mu_0} = \sum_{k=1}^N \frac{(x_k - \mu_0)}{\sigma_0^2} = 0 \]
+as $\sigma^2$ is constant,
+\[ \sum x_k - \sum \mu_0 = 0 \]
+\[ \therefore \sum x_k = \sum \mu_0 \]
+So the most probable value of the parameter is simply the mean of the measurements,
+\[ \mu_0 = \frac{1}{N} \sum^N_{k=1} x_k \]
+
+The standard confidence interval is defined by
+\[ \qty( - \eval{\dv[2]{L}{\mu}}_{\mu_0} )^{\half} = \qty(
+\sum_{k=1}^N \frac{1}{\sigma_0^2})^{- \half} = \qty(
+\frac{N}{\sigma_0^2} )^{-\half} = \frac{\sigma_0}{\sqrt{N}} \]
+So the posterior pdf for $\mu$ can be summarised as 
+\[ \mu = \mu_0 \pm \frac{\sigma_0}{\sqrt{N}} \]
+
+\subsection{Data with varying error bar sizes}
+\label{sec:data-with-varying}
+
+Thus far consideration has only been made of data which has constant
+error bars, but in many cases each datum will have a specific error
+bar. If the errors are still Gaussian we can proceed as before, but
+each measurement, $x_k$ has an associated $\sigma_k$, now,
+\[ L = - \sum_{k=1}^N \frac{(x_k - \mu)^2}{2 \sigma_k^2} + {\rm const.}\]
+The most probable $\mu$, $\mu_0$ satisfies
+\[ \eval{\dv{L}{\mu}}_{\mu_0} = - \sum_{k=1}^N \frac{(x_k -
+  \mu_0)}{\sigma_k^2} = 0 \]
+So
+\[ \mu_0 = \frac{\sum_k \frac{x_k}{\sigma_k^2}}{ \sum_k \frac{1}{\sigma_k^2}} \]
+
+This is a weighted mean; each datum has been loaded by our confidence
+in it; the standard width of our posterior for $\mu$ can be calculated
+as
+\[ {\rm error in } \mu = \qty( - \eval{\dv[2]{L}{\mu}}_{\mu_0} )^{-
+  \half} = \qty( \sum_{k=1}^N \frac{1}{\sigma_k^2} )^{- \half} \]
+
+\subsection{Model Fitting}
+\label{sec:model-fitting}
+
+This approach is easily extended to more sophiticated problems.
+\begin{example} {\em A Neutron Star}\\
+  Consider a binary neutron star system which can be expected to
+  produce sinusoidal gravitational waves at twice the system's orbital
+  velocity. This can be modeled as
+  \[ h(t) = A \sin(\omega t + \phi) \] We wish to determine the
+  amplitude of the waves, $A$, from the output of a detector,
+  $d(t_k)$. For this example assume that the noise is Gaussian (which
+  is very debatable in a GW detector!), with a known variance
+  $\sigma_0^2$. We proceed as before, but now the likelihood of the
+  data depends on how well it fits the model.
+  \[ p(\{ d_k \} | A, w, \phi) \propto \prod_k \exp( - \frac{(d_k - A
+    \sin(\omega t_k + \phi))^2 }{\sigma_0^2} ) \]
+We want to know the posterior for $A$,
+\[ p(A | \{ d_k \}, \omega, \phi) \propto p(A | \omega, \phi) p(\{ d_k
+\} | A, \omega, \phi) \] again, taking the prior as uniform for $A \ge
+0$, and $0$ for $A < 0$, then,
+\[ L = - \sum_{k=1}^N (\frac{d_k - A \sin(\omega t_k + \phi) )^2}{2 \sigma_0^2} \]
+Our most probable $A$, $A_0$, satisfies
+\[ \eval{\dv{L}{A}}_{A_0} = 0 \]
+\[ A_0 = \frac{\sum_k d_k \sin(\omega t_k + \phi)}{\sum_k \sin[2](\omega t_k + \phi)} \]
+\end{example}
+
+\subsubsection{Handling multiple parameters}
+\label{sec:handl-mult-param}
+
+If in the previous example we neither knew $A$ nor $\phi$ we would be
+able to determine a joint posterior for $A$ and $\phi$,
+\[ p(A, \phi | \{ d_k \}, \omega) p ( \{ d_k \} | A, \omega, \phi ) \]
+This represents a probability surface, which can be represented in a
+contour map. The most probable value of $A$ is $A_0$, and $\phi$ is
+$\phi_0$. We have used the prior,
+\[ p(A, \phi | \omega) = p(A|\omega) p(\phi|\omega) \]
+and 
+\begin{align*}
+  p(A|\omega) &= {\rm const}, A>0, 0 {\rm otherwise} \\
+p(\phi | \omega) &= {\rm const}, -\pi < \phi < \pi, 0 {\rm otherwise}
+\end{align*}
+
+\subsection{Marginal Distributions}
+\label{sec:marg-distr}
+
+Suppose we are not interested in $\phi_0$, then we can determine the
+posterior pdf for $A$ alone if we marginalise over $\phi$, so
+\[ p(A | \{ d_k \}, \omega) = \int_{-\infty}^{\infty} p(A, \phi | \{
+d_k \}, \omega) \dd{\phi} \] We have projected the 2D posterior onto
+the $A$-axis. The value of $A_0$ from the marginal distribution need
+not be the same as the one derived from the joint distribution.
+
+\begin{example}{\em Estimating two parameters simultaneously}\\
+   Consider the observation of an optical spectral line using a good
+   CCD. Within the data a spectral line is present, and we want to
+   estimate its amplitude, $A$, which will be represented in the data
+   by a data number $A n_0$, for $n_0$ being a constant depending on
+   the detector efficiency and exposure time. There is also a
+   background level of data, arising from the atmosphere and the CCD's
+   dark current, which has an amplitude $B n_0$.\\
+   Given the shape (but not the height) of the spectral line, how do we
+   optimally use the data to estimate $A$?\\
+   In order to do this we perform a fit consistent with the noise,
+   combining all the available information in the data. We also know
+   the line to be thermally broadened, so it has a Gaussian profile
+   with a wifth $w$. The $k$th datum of the ideal (green) line is therefore
+   \[ D_k = n_0 \qty[ A \exp(- \frac{(x_k -x_0)^2}{2w^2} + B ) ] \] with
+   $x_k$ the position of the $k$th datum, and $x_0$ the position of the
+   centre of the line. The $\{ D_k \}$ values comprise the model; we
+   imagine that we are told $n_0$, $x_0$, and $w$, so our job is to
+   estimate $A$ from the real data.\\ 
+   We are counting photons, and we expect to find $D_k$ photons in the
+   $k$th pixel on average. The probability of getting $N_k$ photons is
+   \[ p(N_k | D_k) \frac{D_k^{N_k} \exp(-D_k)}{N!} \] which is the
+   Poisson distribution, describing the probability of the data given
+   our model, that is, the likelihood of the data. Noting that $D_k$
+   depends on the model parameters, $A$ and $B$, the joint likelihood
+   of all the data, taken as independent, is
+   \[ p( \{ N_k \} | A, B, I) = \prod_{k=1}^m p(N_k | A,B,I) \] In
+   order to find a posterior for $A$ and $B$ we need to set priors on
+   $A$ and $B$. Let's choose 
+   \[ p(A,B|I) =
+   \begin{cases}
+     \text{constant for} & A>0, B>0\\
+     0 & \text{otherwise}
+   \end{cases}
+   \]
+\end{example}
+
+\subsection{A Shortcut for Maximum Likelihood}
+\label{sec:shortc-maxim-likel}
+
+The correct Bayesian approach is always to calculate the posterior
+distribution of the parameter being estimated, but the prior is often
+approimately constant over the area which contains the most
+likelihood. When this is the case the posterior will be directly
+proportional to the likelihood, and the most probable $x$ will be the
+value which maximises the likelihood of the data.
+
+\subsection{Least Squares}
+\label{sec:least-squares}
+
+We can go further, and assume our data is affected by independent Gaussian errors, then, as before,
+\[ L \propto \exp( - \sum_{k=1}^N \frac{(F_k - D_k)^2}{\sigma_k^2}
+) \] for a model $F_k$, data $D_k$, and variance of the $k$th datum
+$\sigma_k^2$. The most probable value of the model parameter is then the one which minimises
+\[ \chi^2 = \sum_{k=1}^N \frac{(F_k - D_k)^2}{\sigma_k^2} \] If the
+errors on all of the data are the same then we need only minimise
+\[ \sum_{k=1}^N (F_k - D_k)^2 \] that is, find the least square
+difference between the model and the data summed over all of the data.
+
+\subsubsection{Straight-line fitting with least squares}
+\label{sec:stra-line-fitt}
+
+A classic eample of the least-squares approach to regression is
+fitting a linear model, of the form $y = m +c$ to data. If we have
+errors only in the $y$ component, so that $\sigma_k$ is the error on
+the $k$th datum, then the data are $\{ D_k \}$ at $x$-positions $\{
+x_k \}$, so that
+\[ \chi^2 = \sum^N_{k=1} \frac{(m x_k + c - D_k)^2}{\sigma_k^2} \]
+Then, $\chi^2$ has a minumum when both
+\[ \pdv{\chi^2}{m} = 0 \quad \text{and} \quad \pdv{\chi^2}{c}=0 \]
+so,
+\[ m \sum \frac{x_k^2}{\sigma_k^2} + c \sum \frac{x_k}{\sigma^2_k} = \sum \frac{D_k x_k}{\sigma_k} \]
+and
+\[ m \sum \frac{x_k}{\sigma_k^2} + c \sum \frac{1}{\sigma_k^2} = \sum
+\frac{D_k}{\sigma_k^2} \] then what remains is to solve for $m$ and
+$c$.
+
+\subsection{Evidence}
+\label{sec:evidence}
+
+Thus far we have concentrated on parameter estimation based on data,
+$d$, using Bayes' Theorem:
+\[ p(a|d,I) = \frac{p(a,I) p(d|a,I)}{p(d|I)} \]
+
+Because we have only been interested in proportionality it has been
+possible to ignore the denominator from the right hand side, as it
+only affects the normalisation of $p(a|d,I)$. The quantity $p(d,I)$ is
+the evidence, or marginal likelihood, with
+\begin{align*}
+  p(d|I) &= \int p(d, a|I) \dd{a} \\ &= \int p(a|I) p(d|a,I) \dd{a} 
+\end{align*}
+
+It represents the joint probability of the data and the parameter
+which is marginalised over; the probability of the parameter
+regardless of the value of the parameter. It is thus the likelihood of
+the model which parameterises the problem with a parameter $a$. The
+probability of the model would be
+\[ p(I|d) = \frac{p(I) p(d|I)}{p(d)} \] We are now considering the
+probabilities of models rather than their parameters, giving a rather
+vague measure, however, a well-chosen model should have a relatively
+high evidence value.
+
+\begin{example}{\em Two different models fitted to data}\\
+  Suppose some data are fitted to a model of the form
+  \[A \sin(\omega t_i) \] such that
+\[ p(A, \omega | \{ d_i \}, I_1) \propto p(A, \omega) \prod_i \exp( - \frac{\qty(d_i - A \sin(\omega t_i))^2}{2 \sigma^2} ) \]
+but are also fitted to a model of the form
+\[ A \exp( - \frac{t}{\tau} ) \] such that
+\[ p(A,\tau | \{ d_i \}, I_2) \propto p(A, \tau) \prod_i \exp( -
+\frac{\qty(d_i - A \exp( - \frac{t_i}{\tau}) )^2}{2 \sigma^2} ) \]
+Both will produce a fit, but to establish which gives the better fit
+we can turn to the evidence, and we find, all other things being
+equal, that \[ p( \{ d_i \} | I_1) \gg p( \{ d_i \} | I_2) \]
+\end{example}
+
+\subsection{Parameter Estimation in Two Dimensions}
+\label{sec:param-estim-two}
+
+Consider the form of the bivariate normal distribution in equation
+(\ref{eq:genbivariatenormal}), where there is a quantity $Q$. We can
+re-express $Q$ as a matrix,
+\begin{equation}
+  \label{eq:1}
+  Q =
+  \begin{pmatrix}
+    X-X_0 & Y-Y_0
+  \end{pmatrix}
+  \begin{pmatrix}
+    A & C \\ C & B
+  \end{pmatrix}
+  \begin{pmatrix}
+    X-X_0 \\ Y-Y_0
+  \end{pmatrix}
+\end{equation}
+where
+\begin{align*}
+  A &= - \eval{ L_{xx} }_{X=X_0} \\
+  B &= - \eval{ L_{yy} }_{Y=Y_0} \\
+  C &= - \eval{ L_{xy} }_{X=X_0, Y=Y_0}
+\end{align*}
+Assuming that our distribution is Gaussian,
+\begin{align*}
+  A^{-1} &= \sigma_X^2 \\
+  B^{-1} &= \sigma_Y^2 \\
+  C^{-1} &= \sigma_{XY}^2
+\end{align*}
+then
+\begin{align*}
+  \begin{pmatrix}
+    \sigma_X^2 & \sigma_{XY}^2 \\ \sigma_{XY}^2 & \sigma_Y^2
+  \end{pmatrix} &=
+-
+\begin{pmatrix}
+  A & C \\ C & B
+\end{pmatrix}^{-1} \\
+&= \frac{1}{AB - C^2}
+\begin{pmatrix}
+  - B & C \\ C & -A
+\end{pmatrix}
+\end{align*}
+
+This approach can be extended to more than two dimensions, where
+\begin{equation}
+  \label{eq:2}
+  F = F_{ij} = \pdv{L(\theta_1, \theta_2, \dots, \theta_n)}{\theta_{ij}}
+\end{equation}
+where $F$ is the Fischer Information Matrix. If the matrix is diagonal,
+\[ F = - \diag( \sigma_1^{-2}, \sigma_2^{-2}, \dots, \sigma_n^{-2}
+) \]The Fischer information matrix provides a measure of how much
+information a dataset can yield about the parameters of a model, as
+the FIM is the inverse of the covariance matrix. In the cases where
+$F$ is not diagonal it can aid us by revealing which combinations of
+parameters are well constrained by the data.
+
+\begin{example}
+ In an experiment, the probability of the $k$th datum having a value $x_k$ is given by
+\[ p(x_k | \mu, \sigma) = \frac{1}{\sigma \sqrt{2 \pi}} \exp( - \frac{(x_k-\mu)^2}{2 \sigma^2} )\]
+where the error, $\sigma$, in each measurement is known. The posterior has the form
+
+\[ p(\mu | \set{x_k}, \sigma, I) \propto p(\set{x_k} | \mu, \sigma, I)
+p(\mu | \sigma, I ) \]
+
+For the data set, containing $k$ measurements,
+\begin{align*} 
+p( \set{x_k} | \mu, \sigma,I) &= \prod_{i=1}^N p (x_k | \mu, \sigma, I) \\
+&= \prod_{i=1}^N \frac{1}{\sigma \sqrt{2 \pi}} \exp[ - \frac{(x_k - \mu)^2}{2 \sigma^2}]
+\end{align*}
+then, assuming a uniform prior,
+\begin{align*}
+  p(\mu | \sigma, I) = p(\mu|I) =
+  \begin{cases}
+    a & \mu_{\rm min} \le \mu \le \mu_{\rm max} \\
+0 & \text{otherwise}
+  \end{cases}
+\end{align*}
+We then want the log of the posterior,
+\begin{align*}
+  L &= \log( p(\mu | \set{x_k}, \sigma, I) ) \\
+&= \log(a) + \sum_{i=1}^N \log( p(x_k | \mu, \sigma, I) ) \\
+&= \text{constant } - \sum_{i=1}^N \frac{(x_k - \mu)^2}{2 \sigma^2}
+\end{align*}
+Now, let $\mu_0$ be the best estimate of $\mu$, so
+\begin{align*}
+  \eval{ \dv{L}{\mu} } = \sum_{i=1}^N \frac{(x_k - \mu_0)}{\sigma^2} = 0
+\end{align*}
+From this,
+\[ \sum_{i=1}^N x_k = \sum_{i=1}^N \mu_0 = N \mu_0 \]
+or
+\[ \mu_0 = \frac{1}{N} \sum_{i=1}^N x_k \]
+Then, our confidence in the reliability of the best estimate is
+\[ \eval{\pdv[2]{L}{\mu}}_{\mu_0} = - \sum_{i=1}^N \frac{1}{\sigma^2}
+= - \frac{N}{\sigma^2} \]
+So our inference of $\mu$ is summarised by
+\[ \mu = \mu_0 \pm \frac{\sigma}{\sqrt{N}} \]
+\end{example}
+
+\begin{example}
+  Consider a model of the form
+  \[ y = a + bx \] where we want to estimate the parameters $a$ and
+  $b$. Let us assume a broad and uniform prior on both parameters. All
+  measurements are subject to Gaussian, independent noise with $\mu=0$
+  and a variance $\sigma^2$. There are $n$ observations, $(\set{x_i}
+  \times \set{y_i}), i \in [1,n]$.  Since we have uniform priors, the
+  posterior is proportional to the likelihood, $l(a,b)$.
+  \[ l(a,b) = \prod_{i=1}^n \frac{1}{\sqrt{2 \pi} \sigma} \exp[ -
+  \frac{1}{2 \sigma^2} (y_i - a - bx_i)^2 ] \] We want to maximise the
+  log likelihood, $L = log(l)$,
+  \[ L(a,b) = - \frac{n}{2} \log(2 \pi) - n \log(\sigma) - \frac{1}{2
+    \sigma^2} \sum_{i=1}^n (y_i - a - bx_i)^2 \] Then differenitating,
+\begin{align*} 
+\pdv{L}{a} &= \frac{1}{\sigma^2} \sum_{i=1}^n (y_i - a - bx_i) \\
+\pdv{L}{b} &= \frac{1}{\sigma^2} \sum_{i=1}^n (y_i - a - bx_i)x_i
+\end{align*}
+The minimum occurs where these derivatives evaluate to zero, which give
+\begin{align*}
+  \sum_{i=1}^n y_i& = na + b \sum_{i=1}^n x_i \\
+\sum_{i=1}^n x_i y_i &= a \sum_{i=1}^n x_i + b \sum_{i=1}^n x^2_i
+\end{align*}
+which can be rewritten as a matrix equation,
+\begin{equation*}
+  \begin{pmatrix}
+    n & \sum x_i \\ \sum x_i & \sum x_i^2
+  \end{pmatrix}
+  \begin{pmatrix}
+    a \\ b
+  \end{pmatrix}
+=
+\begin{pmatrix}
+  \sum y_i \\ \sum x_i y_i
+\end{pmatrix}
+\end{equation*}
+This can be solved
+\begin{align*}
+  \begin{pmatrix}
+    a \\ b
+  \end{pmatrix} &=
+  \begin{pmatrix}
+    n & \sum x_i \\ \sum x_i & \sum x_i^2
+  \end{pmatrix}^{-1}
+  \begin{pmatrix}
+    \sum y_i \\ \sum x_i y_i
+  \end{pmatrix} \\
+&= \frac{1}{n \sum x_i^2 - \qty( \sum x_i )^2}
+\begin{pmatrix}
+  \sum x_i^2 & - \sum x_i \\ - \sum x_i & n
+\end{pmatrix}
+\begin{pmatrix}
+  \sum y_i \\ \sum x_i y_i
+\end{pmatrix}
+\end{align*}
+from which we obtain
+\begin{align*}
+  a &= \frac{\sum x_i^2 \sum y_i - \sum x_i \sum x_i y_i}{n \sum x_i^2 - \qty( \sum x_i)^2} \\
+b &= \frac{n \sum x_i y_i - \sum x_i \sum y_i}{n \sum x_i^2 - \qty( \sum x_i)^2}
+\end{align*}
+The FIM can then be computed from the expressions
+\begin{align*}
+  \pdv[2]{L}{a} &= \frac{n}{\sigma^2} \\
+\pdv[2]{L}{b} &= \frac{\sum x_i^2}{\sigma^2} \\
+\pdv[2]{L}{a}{b} &= \sum{x_i}{\sigma^2}
+\end{align*}
+So
+\begin{equation*}
+  F = \frac{1}{\sigma^2}
+  \begin{pmatrix}
+    -n & - \sum x_i \\ - \sum x_i & - \sum x_i^2
+  \end{pmatrix}
+\end{equation*}
+thus
+\begin{equation*}
+  F^{-1} = \frac{\sigma^2}{n \sum x_i^2 - \qty( \sum x_i)^2} 
+  \begin{pmatrix}
+    \sum x_i^2 & - \sum x_i \\ - \sum x_i & n
+  \end{pmatrix}
+\end{equation*}
+and thus
+\begin{align*}
+  \sigma^2_a &= \frac{\sigma^2 \sum x_i^2}{n \sum x_i^2 - \qty( \sum x_i)^2} \\
+\sigma_b^2 &= \frac{\sigma^2 n}{n \sum x_i^2 - \qty( \sum x_i )^2} \\
+\sigma_{ab}^2 &= \frac{- \sigma^2 \sum x_i}{n \sum x_i^2 - \qty( \sum x_i)^2}
+\end{align*}
+\end{example}
+
+\section{Credible Regions}
+\label{sec:credible-regions}
+
+Consider the expession for log likelihood,
+\[ L(\theta_1, \theta_2) = \text{constant} = \half \chi^2 (\theta_1,
+\theta_2) \] we define $\chi^2 \equiv \chi^2_{\rm min}$ when
+$(\theta_1, \theta_2) = (\theta_{01}, \theta_{02})$, and so $\Delta
+\chi^2 = \chi^2 - \chi^2_{\rm min}$ which tells us the $\chi^2$ value
+when the parameters' values which have been chosen do not correspond
+to their true values. Thus to maximise the likelihood we minimise the
+$\chi^2$.
+
+\begin{align*}
+  L(\theta_1, \theta_2) - L(\theta_{01}, \theta_{02}) &= - \half (\chi^2 - \chi^2_{\rm min}) \\ &= - \half \Delta \chi^2 \\
+  L(\theta_1, \theta_2) &= L(\theta_{01}, \theta_{02}) - \half \Delta
+  \chi^2
+\end{align*}
+So the posterior can then be expressed
+\[ p(\theta_1, \theta_2 | \text{data}, I) = p(\theta_{01}, \theta_{02}
+| \text{data}, I) \exp( - \half \Delta \chi^2) \] Now, each contour on
+the posterior probability corresponds to a unique value of $\Delta
+\chi^2$; the further the chosen parameters are from the minimising
+value the broader the credible regions will be. These credible regions
+are also referred to as confidence intervals.
+
+\section{Principle Component Analysis}
+\label{sec:princ-comp-analys}
+
+A non-zero correlation coefficient produces ellipsoidal isoprobability
+contours; to get around this we can re-parametrise the model to find
+independent parameters, but we need to define new principle axes to do
+this. To find independenet axes we need a diagonal Fisher Information
+Matrix, and we can diagonalise to achieve one. \\
+The characteristic equation is
+\begin{equation}
+  \label{eq:3}
+  \begin{pmatrix}
+    A & B \\ C & D
+  \end{pmatrix}
+  \begin{pmatrix}
+    x \\ y
+  \end{pmatrix}
+= \lambda
+\begin{pmatrix}
+  x \\ y
+\end{pmatrix}
+\end{equation}
+the eigenvectors will give the independent parameters, or principle
+axes. This process allows multi-dimensional datasets to be converted
+to data dependent on uncorrelated variables---the principle
+components. The first principle component should be a linear
+combination of the original variables which incorporates as much of
+the cariation in the data as possible; the second principle component
+should account for as much of the remaining variation as possible. In
+addition, all of the principle components are mutually orthogonal.
+
+\section{Markov Chain Monte Carlo Methods}
+\label{sec:markov-chain-monte}
+
+Consider a model $f(X)$ where $X$ represents the set of parameters for
+the model which has a probability density
+\[ p(X | D, I) \] for observed data $D$.
+The expectation value for the model is then
+\[ \ev{f(X)} = \int f(X) p(X|D,I) \dd{X} = \int g(X) \dd{X} \] if $X$
+has a single element this is a straightforward computation, but with
+many parameters we need to marginalise many times, which is
+computationally intensive. For example, consider a Gaussian likelihood
+with two parameters, $A$ and $B$. We can evaluate the function by
+brute force over a grid, but we are only interested in the likelihood
+around the peak of the function, so this is computationally
+wasteful. Instead we can use (Monte Carlo) random sampling.
+
+To do this we take random samples in the parameter space, but we need
+to have the correct mean and standard deviation for the Gaussian from
+which we draw the random points to take the samples. We can manage
+this using a Markov chain technique, and Markov Chain Monte Carlo
+methods are excellent for sampling high-dimension functions.
+
+A Markov chain is a system which undergoes transitions from one state
+to another on a state space, where the next state depends only on the
+current state.
+
+Suppose we have a likelihood function which depends on two variables,
+$a$ and $b$, and we want to find the maximum.
+
+\begin{algorithm}[Metropolis-Hastings Algorithm]\\
+\begin{enumerate}
+\item Start with $P_0 = (a, b) \gets (a_0, b_0)$ \\ i.e. select a
+  point at random in the distribution.
+\item Center a PDF, $Q$, called the proposal density, at this point.
+\item Sample a new point, $P^{\prime}$ from $Q$.
+\item Compute the ratio, $R$, of the likelihoods of the initial point
+  and the new point.
+\begin{itemize}
+\item if $R>1$ the likelihood of $P^{\prime}$ is greater than at
+  $P_0$, and so $P_1 \gets P^{\prime}$ as it becomes the next step in
+  the chain.
+\item else if $R<1$ we reject $P^{\prime}$ for the next point, and
+  instead accept it with a probability $R$ by generating a a random number, $x ~ U[0,1]$.
+  \begin{itemize}
+  \item If $x<R$ accept $P^{\prime}$, so $P_1 \gets P^{\prime}$
+  \item If $x>R$ reject P$^{\prime}$, so $P_1 \gets P_0$
+  \end{itemize}
+\end{itemize}
+\end{enumerate}
+\end{algorithm}
+
+After running the Metropolis-Hastings algorithm we have a sequence of points 
+\[ P_1, P_2, \dots, P_n \] which constitute a sample from the
+likelihood function, this sequence generates a sequence for $a$ and
+$b$. Making a histogram of these sequences we can estimate the mean
+and variance of each parameter. The MH algorithm generates parameter
+samples with a probability density which converges on the desired
+target posterior, or the stationary distribution of the Markov Chain.
+
+In order to converge on a stationary distribution the Markov chain
+must be irreducible (i.e.\ must be able to jump to all states with
+positive probability), aperiodic (i.e.\ the chain cannot oscillate
+between states), and positive recurrent (i.e.\ if there is a non-zero
+probability that we do not return to a state that we start with, the
+state is transient, otherwise it is recurrent; positive recurrent
+states return to their starting state within a finite time).
+
+We can show the detailed balance condition for the Markov chain---the
+acceptance probability rule of the Metropolis algorithm leads to an
+equation for the transition properties of the chain---and that this
+implies that the Markov chain does converge to a stationary
+distribution.
+
+Consider neighbouring points on the chain $X_t$ and $X_{t+1}$ with a
+joint probability
+\[ p(X_t, X_{t+1}) = p(X_t|D,I)p(X_{t+1}| X_t) \] where the second
+term represents the probability of moving from $X_t$ to $X_{t+1}$, thus
+\begin{align*}
+  p(X_t, X_{t+1}) &= p(X_t | D, I) \min( 1, \frac{p(X_{t+1} | D,I)}{p(X_t|D,I)}) \\
+&= \min(p (X_t | D,I) , p(X_{t+1}|D,I) ) \\
+&= p(X_{t+1} | D,I) \min(1, \frac{p(X_t | D,I )}{p(X_{t+1}| D,I)} ) \\
+&= p(X_{t+1} | D,I) p(X_t|X_{t+1} )
+\end{align*}
+Thus
+\[ p(X_t | D,I) p(X_{t+1} | X_t) = p(X_{t+1} | D,I) p(X_t | X_{t+1}) \]
+which is the detailed balance condition.
+
+We want to show that, if the sample $X_t$ is sampled from $p(X_t)$
+then $X_{t+1}$ is also from the same PDF. We can show this by
+marginalising the distribution for $X_{t+1}$.
+
+\begin{align*} 
+\int p(X_t | D,I) p(X_{t+1} | X_t) \dd{X_t} &= \int p(X_{t+1} | D,I) p (X_t | X_{t+1}) \dd{X_t} \\
+&= p(X_{t+1} | D,I) \int p(X_t | X_{t+1}) \dd{X_t} \\
+&= p(X_{t+1} | D,I)
+\end{align*}
+So, the detailed balance condition gives a positive recurrent chain.
+
+\section{Frequentist Hypothesis Testing}
+\label{sec:freq-hypoth-test}
+
+In discussion of parameter estimation we made use of an estimated PDF
+to find the parameter properties. We did not, however, address the
+suitability of the PDF model in the first place.
+
+\subsection{$p$-value testing}
+\label{sec:p-value-analysis}
+
+\begin{definition}[Null Hypothesis]
+  A null hypothesis is the default position; that there is no
+  relationship between two measured phenomena, for example.
+\end{definition}
+
+Let us draw data from a Gaussian distribution, and determine if they
+are consistent with a null hypothesis. Let us assume a variance
+$\sigma^2$. We have measured data $\set{x_i}$ for $i \in [1,10]$ and
+$\sum x_i = 47.8$. We assume a Gaussian distribution with $\mu_{\rm
+  model} = 4$, and $\sigma^2=2$. The variance on the estimate of the
+mean, $\sigma^2_{\mu}$ is $\frac{2^2}{10} = 0.4$, and the observed
+mean is $4.78$.
+
+We want to transform to a standard normal variable,
+\begin{equation}
+  \label{eq:5}
+  Z = \qty( \frac{\bar{x}_{\rm ob} - x\bar{x}_{\rm mod}}{\sigma_{\mu}} ) \sim \mathcal{N}(\mu=0, \sigma^2=1)
+\end{equation}
+For this example,
+\[ Z_{\rm obs} = 1.23 \] If the data is consistent with the null
+hypothesis, what is the probability of finding this value or one
+larger?
+This probability is the $p$-value,
+
+\begin{definition}[$p$-value]
+  The $p$-value is the probability of observing a test statistic at
+  least as extreme as the one which was actually observed, assuming
+  the null hypothesis is true.
+  \[ p(\abs{Z} \ge \abs{Z_{\rm obs}}) = 1 - \int_{-Z_{\rm obs}}^{\rm
+    obs} \frac{1}{\sqrt{2 \pi}} \exp(- \frac{z^2}{2}) \dd{z} \]
+\end{definition}
+
+In this case, $p=0.218$. The smaller the $p$-value the less credible
+the null hypothesis is judged to be; the cutoff significance, below
+which the null hypothesis is rejected, is usually set at $p<0.05$.
+
+$p$-values are useful, but it does not represent a judgement on
+whether the null hypothesis is true, merely if it is consistent with
+the data; failure to reject the null hypothesis only implies there is
+insufficient evidence to reject it.
+
+\subsection{Student's $t$ distribution}
+\label{sec:stud-t-distr}
+
+If the variance is not assumed it is possible to estimate it from the
+data by forming the statistic
+\[ t_{\rm obs} = \qty( \frac{\bar{x}_{\rm obs} - \bar{x}_{\rm
+    mod}}{\flatfrac{\hat{\sigma}_{\mu}}{\sqrt{n}}} ) \]
+where
+\[ \hat{\sigma}_{\mu} = \frac{1}{(n-1)} \sum_{i=1}^n (x_i -
+\bar{x}_{\rm obs})^2 \] for $n$ the number of observations, so $n-1$
+represents the number of remaining degrees of freedom after
+calculating the mean from the data.  $t_{\rm obs}$ does not have a
+Gaussian distribution, but is described by Student's $t$-distribution.
+
+\begin{definition}[Student's $t$-distribution]
+  \begin{equation} p(t) = \frac{\Gamma \qty( \frac{\nu+1}{2} )}{\sqrt{\nu \pi}
+    \Gamma \qty( \frac{\nu}{2} ) } \qty( 1 + \frac{t^2}{\nu} )^{-
+    \frac{\nu+1}{2}}
+\end{equation}
+for $\nu = n-1$ the degrees of freedom.
+\end{definition}
+
+In general if we divide a Gaussian random variable with a scaled
+random variable from a $\chi^2$-distribution the resulting statistic
+follows Student's $t$-distribution, i.e.\ if $Y$ is drawn from a
+Gaussian, and $Z$ from a $\chi^2$-distribution, then
+\[ X = \frac{Y}{\sqrt{\flatfrac{Z}{n}}} \] with $X$ having a student's
+$t$-distribution with $n-1$ degrees of freedom.  By comparing this to
+the expression for $t_{\rm obs}$ we see that $\hat{\sigma}_{\mu}^2$
+has a $\chi^2$-distribution.
+The two types of sample variance are the biased,
+\[ \sigma = \frac{1}{n} \sum_{i=1}^n x_i^2 - \qty( \frac{1}{n}
+\sum_{i=1}^n x_i )^2 \]
+and the unbiased
+\[ \hat{\sigma}_{\mu} = \frac{1}{(n-1)} \sum_{i=1}^n (x_i -
+\bar{x}_{\rm obs})^2 \] variances, which both sum the square of the
+Gaussian variables which give a $\chi^2$ distribution with $n$ degrees
+of freedom.
+
+\begin{example}
+  Consider radio flux density measurements from a radio galaxy over a
+  period of 6100 days, made at regular time intervals.\\
+  Our model assumes that the radio emission is constant in time, so
+  let's test this hypothesis.
+
+  Null hypothesis: the galaxy has an unknown but constant flux density.
+
+  We select a goodness-of-fit $\chi^2$-statistic to compare our data
+  to the model. Our data, $\set{x_i}$ have a mean $\mu = 7.98
+  \milli{\rm Jy}$, and previous experience with the instrumentation
+  suggests that $\sigma = 2.7$. The $\chi^2$ statistic for the data
+  evaluates to $\chi^2 = 26.76$. There were a total of 15
+  measurements, but one was used to compute the mean, leaving 14
+  degrees of freedom.
+
+  So, if the data is compatible with the null hypothesis, how probable
+  is getting the observed value of $\chi^2$?
+  \begin{align*}
+    p(\abs{\chi^2} \ge \abs{\chi^2_{\rm obs}} ) &= 1 - F(\chi^2) \\
+    &= 1 - \int_0^{\chi^2_{\rm obs}} \frac{1}{\Gamma \qty( \frac{\nu}{2} ) 2^{\frac{\nu}{2}}} x^{\frac{\nu}{2} - 1} \exp( - \frac{x}{2} ) \dd{x} \\
+    &= 0.02
+  \end{align*}
+  If the flux density were constant we would only expect 2\% of
+  datasets with 15 observations under the same conditions to have a
+  $\chi^2$ greater than the observed one, so there is little support
+  for this null hypothesis. Additionally,
+  \[ \frac{\chi^2_{\rm obs} - \ev{\chi^2}}{\sigma} = \frac{26.76 -
+    14}{\sqrt{2 \times 14}} = 2.4 \equiv 2.4 \sigma \]
+
+\end{example}
+
+\subsection{General Hypothesis Testing}
+\label{sec:gener-hypoth-test}
+
+In general we want to compare a null hypothesis, $H_0$ to another
+competing hypothesis, $H_1$. To do this we construct a test statistic,
+e.h. a $t$-statistic, and based on its value, we can either reject
+$H_0$ in favour of $H_1$, or reject $H_1$ in favour of $H_0$. To make
+the decision we need a critical region, where $H_0$ is rejected, and
+an acceptance region, where $H_0$ is accepted.
+
+In comparison to Bayesian methods, frequentist approaches to
+hypothesis testing are varied, and more specific.
+
+\begin{itemize}
+\item {\bf Goodness of fit} --- $\chi^2$ test
+\item {\bf Difference of means} --- Student's $t$-distribution
+\item {\bf Sample cumulative distribution function} --- Kolmogorov-Smirnov test
+\item {\bf Variable Correlation} --- Sample correlation coefficient
+\item {\bf Discrete random variables} --- $\chi^2$ test
+\item {\bf Ratio of variances} --- $F$ test.
+\end{itemize}
+
+\subsubsection{Discrete Distributions Goodness of Fit}
+\label{sec:discr-distr-goodn}
+
+Consider the case where we have a discrete data distribution, and we
+want to test goodness of fit. Examples would be CCD photon counts, or
+meteor observations. The $\chi^2$-statistic can be applied
+here. Suppose the model follows a discrete distribution, e.g.\ the
+Poisson distribution for a total of $n$ observations. It is possible
+to make a histogram of the distribution over $k$ bins, with the
+expected frequency of each bin denoted $e_k$. Similarly, the data for
+the value in the $k$th bin is observed with a frequency of $o_k$. We
+can test the null hypothesis by comparing the observed and expected
+frequencies.
+\[\chi^2 = \sum_{i=1}^k \frac{(o_i - e_i)^2}{e_i} \]
+For a Poisson distribution $\sigma^2 = \mu$. Under the null hypothesis
+this test statistic will have a $\chi^2$ distribution with $\nu=k-1-m$
+degrees of freedom, with one degree lost as the sample size is
+discrete, and with $m$ parameters we wish to estimate.
+
+\subsubsection{Kolmogorov-Smirnov Test}
+\label{sec:kolm-smirn-test}
+
+The approach of section \ref{sec:discr-distr-goodn} will be
+insufficient for a small number of samples, as we will be unable to
+bin finely enough to constrain the PDF model. A more useful approach
+is comparing the cumulative distributions of observations with a
+theoretical model. This is performed using the Kolmogorov-Smirnov test
+statistic.
+
+Let $\set{x_i}$ be a set of independent and identically distributed
+random samples from an unknown population. We arrange $\set{x_i}$ in
+ascending order, so that the cumulative distribution is described by
+\[ S_n(x) =
+\begin{cases}
+  0 & x < x_1 \\ \frac{i}{n} & x_i \le x \le x_{i+1}, 1 \le i \le n-1 \\
+1 & x \ge x_n
+\end{cases}
+\]
+Which is a step function with increments of $\frac{1}{n}$ at each
+sample value of $x$. Let $R(x)$ be the model CDF we wish to test for
+the null hypothesis. The KS test statistic is then defined as 
+\begin{equation}
+  \label{eq:6}
+  D_n = \max( \abs{R(x) - S_n(x)} )
+\end{equation}
+The distribution of $D_n$ for varying $n$ is independent of
+$R(x)$. The KS test is robust and non-parametric, but is more likely
+to favour a false null hypothesis than other methods.
+
+\begin{example}
+  In an experiment cars are counted as they pass in front of an
+  observer, during a specific time interval.\\ To attempt to determine
+  the true mean a Poisson distribution is fitted to the
+  observations. We choose a model mean of $\mu=11$, and calculate the
+  $\chi^2$ statistic, and find a minimum at $\ev{\mu}=11$. The
+  cumulative Kolmogorov-Smirnov test indicates a mean of $11$.
+\end{example}
+
+\subsubsection{Sample Correlation Coefficient}
+\label{sec:sample-corr-coeff}
+
+Recall the correlation coefficient from equation (\ref{eq:corrco}),
+and noting that $\sigma_{xy}^2$ is the variance, we can expand this to
+\begin{align*}
+  \frac{\sigma_{xy}^2}{\sigma_x \sigma_y} &= \frac{E[(x-\mu_x)(y-\mu_y)]}{\sqrt{E[(x-\mu_x)^2] E[(y-\mu_y)^2]}} \\
+&= \frac{\sum_{i=1}^n (x-\mu_x)(y-\mu_y)}{ \sqrt{\sum_{i=1}^n (x-\mu_x)^2 \sum_{i=1}^n (y-\mu_y)^2}}
+\end{align*}
+For the sample correlation coefficient we use
+\begin{equation}
+  \label{eq:7}
+  \hat{\rho} = \frac{\sum_{i=1}^n (x-\hat{\mu}_x)(y-\hat{\mu}_y)}{ \sqrt{\sum_{i=1}^n (x-\hat{\mu}_x)^2 \sum_{i=1}^n (y-\hat{\mu}_y)^2}}
+\end{equation}
+where quantities with hats are estimated quantities from the observed
+data. To test hypotheses we need the sample distribution of
+$\hat{\rho}$. We consider two cases where $x$ and $y$ have a bivariate
+normal PDF. If $x$ and $y$ are independent the $t$ distribution will
+follow a Student's $t$ distribution,
+\[ t = \frac{\hat{\rho} \sqrt{n-2}}{\sqrt{1-\hat{\rho}^2}} \] For a
+large number of samples, where $x$ and $y$ have a correlation
+coefficient $\rho_0$, the statistic
+\[ z= \half \log( \frac{1+\hat{\rho}}{1-\hat{\rho}}) \]
+will follow a Gaussian distribution with
+\[ \mu_z = \half \log( \frac{1 + \rho_0}{1 - \rho_0} ) \] 
+and 
+\[ \sigma_z^2 = \frac{1}{n-3} \]
+
+\section{A Frequentist Approach to Confidence Intervals}
+\label{sec:freq-appr-conf}
+
+Let $\set{x_i}$ be a set of $n=10$ samples drawn from $\nabla(\mu,
+\sigma^2)$ with an unknown $\mu$ but known $\sigma=1$. The sample
+mean, $\bar{x}$, can be determined with a standard deviation
+$\sigma_{\mu}$,
+\[ \sigma_{\mu} = \frac{\sigma}{\sqrt{10}} \approx 0.32 \]
+Thus
+\begin{align*}
+  p(\mu-0.32 < \bar{x} < \mu+0.32) & \equiv p(\bar{x} - 0.32 < \mu <
+  \bar{x} + 0.32) \\ &= 0.68
+\end{align*}
+Suppose we find the mean to be $\bar{x}=5.40$ from the data. We cannot then say
+\[ p(5.08 < \mu < 5.72)=0.68 \], as the true mean is a fixed but
+unknown quantity in frequentist analysis, so the probability that the
+mean is in a given range is either 0 or 1. Instead this statement
+means that when 10 samples are drawn fro $\mathcal{N}(\mu, \sigma^2)$
+we expect 68\% of the samples to lie in the range. This 68\% is the
+\emph{coverage}.
+
+\section{Bayesian Model Selection}
+\label{sec:bayes-model-select}
+
+In a Bayesian framework, when we have two competing hypotheses we can
+take the ratio of the posteriors for each model to form the \emph{odds
+  ratio}. Given two hypotheses, $A$ and $B$,
+\begin{equation}
+  \label{eq:8}
+  \mathcal{O}_{AB} = \frac{p(M_A|D,I)}{p(M_B | D,I)} = \frac{p(M_A|I)}{p(M_B|I)} \frac{p(D|M_A,I)}{p(D|M_B,I)}
+\end{equation}
+The odds ratio then gives a means to find the preferred hypothesis, as
+when $\mathcal{O}_{AB}>1$ the implication is that $M_A$ is preferred,
+otherwise $M_B$ is preferred. If $\mathcal{O}_{AB}=1$ there is
+insufficient reason to prefer either model.
+
+When models have numerous parameters we must marginalise over all of
+the desired model parameters.
+
+\subsection{Occam Factor}
+\label{sec:occam-factor}
+
+Again, consider two models $M_A$ and $M_B$, which both have a Gaussian
+likelihood. $M_A$ has no parameters, but $M_B$ has one;
+$\theta$. Clearly it will be easier to make a hypothesis like $M_B$
+fit the data, as it has more degrees of freedom than $M_A$. This will
+be reflected in the constant produced from marginalising the
+likelihood function of $M_B$. This constant is the Occam factor, and will have the form
+\begin{equation}
+  \label{eq:9}
+  O = \frac{b-a}{\sigma_{\theta} \sqrt{2 \pi}}
+\end{equation}
+in the case that $M_B$ has a Gaussian likelihood, and uniform prior
+from $a$ to $b$.
+
+\section{Choosing Priors}
+\label{sec:choosing-priors}
+
+\subsection{The Jeffreys Prior}
+\label{sec:jeffreys-prior}
+
+Uninformative priors are ones which do not significantly affect the
+posterior distribution, for example, uniform priors, while vague
+priors have a large spread over the parameter of choice, for example,
+a Gaussian prior with a large variance. Conversely, informative priors
+convey information suggesting a preference for particular parameter
+values.\\
+The \emph{Principle of Indifference}, which originated from
+Bernoulli's \emph{Principle of Insufficient Reason}, leads us to
+assign the same probability to all events for which we have no reason
+to favour over each other.
+
+Consider a parameter, $X$, which describes a continuous quantity, for
+example, the location of a lighthouse along a straight
+coastline. Assume that it lies somewhere within an infinitesimally
+small range, $X \in (x, x+\Delta)$, so
+\[ p(X=x|I) \dd{X} = \lim_{\Delta \to 0} p(x \le X \le x+\Delta | I) \]
+the small change in $X$ will lead to a small change in the PDF, so
+\[ p(X|I)\dd{X} \approx p(X+\Delta|I) \dd{(X+\Delta)} \]
+and, since $\Delta$ is constant, $\dd{X+\Delta} = \dd{X}$, so,
+\[ p(X|I) \approx \text{constant} \]
+
+Similarly, consider the case of a scale parameter, $L$, e.g.\ the
+distance to an astronomical object. From the Principle of Least
+Indifference,
+\[ p(L|I) \dd{L} = p(\beta L |I) \dd{(\beta L)} \] for a positive
+constant $\beta$. Since 
+\begin{align*}
+  p(L|I) &= p(\beta L|I)\beta \\ \propto \frac{1}{L}
+\end{align*}
+This form of the prior on the scale parameter is a Jeffreys prior,
+representing complete ignorance of the scale parameter's value. It is
+the equivalent of the uniform prior for the logarithm of the scale
+parameter., i.e.\
+\[ p(\log(L) | I) = \tet{constant} \]
+
+The Jeffrey's prior is an example of a much more general result.
+
+\subsection{Fisher Information}
+\label{sec:fisher-information}
+
+Suppose our inference problem is described by a likelihood with
+paramters $\vec{\theta}$, then the Jeffreys prior is an uninformative
+prior defined as
+\[ p(\vec{\theta}) \propto \qty[ \det(I(\vec{\theta})) ]^{\half} \]
+where $I(\vec{\theta})$ is the Fisher Information,
+\begin{equation}
+  \label{eq:11}
+  I(\vec{\theta})_{ij} = E \qty[ \pdv{\theta_i} \log(l(\vec{\theta})) \pdv{\theta_j} \log(l(\vec{\theta}))]
+\end{equation}
+which reduces to the Fisher Information Matrix in the case of a
+Gaussian likelihood.
+
+\subsection{Invariance}
+\label{sec:invariance}
+
+An important property of the Jeffreys prior is that it is invariant
+under any reparameterisation of $\vec{\theta}$.
+
+In order to reparameterise the prior, from $\vec{\theta} \to \vec{\phi}$ we need
+\[ p(\vec{\phi}) = p(\theta) \abs{\det{J}} \]
+where $J$ is a Jacobian. Let
+\[ p(\vec{\theta}) \propto \qty[ \det(I(\vec{\theta}) ) ]^{\half} \] and
+require the same for the reparameterised prior, $p(\vec{\phi})$.
+Combining,
+\[ p(\vec{\phi}) \propto \qty( \det(I(\vec{\theta}) ) )^{\half}
+\det(J) = \sqrt{\det[I(\vec{\theta})JJ]} \]
+Then,
+\begin{align*}
+I(\vec{\theta})J &=
+\begin{pmatrix}
+  \pdv{l}{\theta_1} \pdv{l}{\theta_1} & \cdots & \pdv{l}{\theta_1} \pdv{l}{\theta_n} \\
+  \vdots & \ddots & \vdots \\
+  \pdv{l}{\theta_n} \pdv{l}{\theta_1} & \cdots & \pdv{l}{\theta_n}
+  \pdv{l}{\theta_n}
+\end{pmatrix}
+\begin{pmatrix}
+  \pdv{\theta_1}{\phi_1} & \cdots & \pdv{\theta_1}{\phi_n} \\
+  \vdots & \ddots & \vdots \\
+  \pdv{\theta_n}{\phi_1} & \cdots & \pdv{\theta_n}{\phi_n}
+\end{pmatrix}
+\\ &=
+\begin{pmatrix}
+  \pdv{l}{\theta_1} \pdv{l}{\phi_1} & \cdots & \pdv{l}{\theta_1} \pdv{l}{\phi_n} \\
+  \vdots & \ddots & \vdots \\
+  \pdv{l}{\theta_n} \pdv{l}{\phi_1} & \cdots & \pdv{l}{\theta_n}
+  \pdv{l}{\phi_n} \\
+\end{pmatrix}\\
+&:= A
+\end{align*}
+\begin{align*}
+  p(\vec{\phi}) &\propto \sqrt{\det(AJ)} \\ &= \sqrt{\det(A) \det(J)}
+  \\ &= \sqrt{\det(A^{\rm T}) \det(J)} \\ &= \sqrt{\det(A^{\rm T}J)}
+\end{align*}
+So,
+\begin{align*}
+  A^{\rm T}J &= 
+\begin{pmatrix}
+  \pdv{l}{\theta_1} \pdv{l}{\phi_1} & \cdots & \pdv{l}{\theta_1} \pdv{l}{\phi_n} \\
+  \vdots & \ddots & \vdots \\
+  \pdv{l}{\theta_n} \pdv{l}{\phi_1} & \cdots & \pdv{l}{\theta_n}
+  \pdv{l}{\phi_n} \\
+\end{pmatrix}
+\begin{pmatrix}
+  \pdv{\theta_1}{\phi_1} & \cdots & \pdv{\theta_1}{\phi_n} \\
+  \vdots & \ddots & \vdots \\
+  \pdv{\theta_n}{\phi_1} & \cdots & \pdv{\theta_n}{\phi_n}
+\end{pmatrix}
+\\ &=
+\begin{pmatrix}
+  \pdv{l}{\phi_1} \pdv{l}{\phi_1} & \cdots & \pdv{l}{\phi_1} \pdv{l}{\phi_n} \\
+  \vdots & \ddots & \vdots \\
+  \pdv{l}{\phi_n} \pdv{l}{\phi_1} & \cdots & \pdv{l}{\phi_n}
+  \pdv{l}{\phi_n} \\
+\end{pmatrix}\\
+& := I(\vec{\phi})
+\end{align*}
+Thus,
+\[ p(\vec{\phi}) \propto \sqrt{\det( I(\vec{\phi}) )} \] and the
+Jeffreys prior is invariant under a parameter change, where a uniform
+prior can go from being uninformative to informative under a
+transform.
+
+\end{document}

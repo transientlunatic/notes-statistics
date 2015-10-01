@@ -1,0 +1,17 @@
+\definecolor{accent-pink}{HTML}{C3325F}
+\definecolor{accent-red}{HTML}{9d261d}
+\definecolor{accent-purple}{HTML}{7a43b6}
+\definecolor{muted-blue}{HTML}{195073}
+\definecolor{muted-green}{HTML}{7F8C1F}
+\definecolor{muted-orange}{HTML}{EE913F}
+
+\begin{tikzpicture}[scale=1.0]
+
+\fill [accent-pink] (0,0) ellipse (4 and 2);
+\draw [white] (-2, 1) node {C};
+\fill [muted-blue, opacity=0.6] (1,.5) ellipse (2 and 1);
+\draw [white] (1,.5) node {A};
+\fill [muted-orange, opacity=0.6] (-1,-.5) ellipse (2 and 1);
+\draw [white] (-1,-.5) node {B};
+
+\end{tikzpicture}

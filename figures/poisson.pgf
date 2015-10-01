@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+    \begin{axis} [
+    ybar, 
+    width=\linewidth, 
+    height=2in,
+    domain=-2:14,
+    samples=16,
+    xmin=-2, xmax=14
+    ]
+    \addplot gnuplot[id=poi, mark=none, samples=16, accent-blue, ultra thick]{
+    	     exp(x*log(5)-lgamma(x+1)-5)
+    };
+    \end{axis}
+\end{tikzpicture}
